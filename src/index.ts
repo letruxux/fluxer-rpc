@@ -43,9 +43,19 @@ async function getDiscordPresence() {
 }
 
 function timePassedToString(ms: number) {
-  return `${Math.floor(ms / 1000 / 60)}:${(Math.floor(ms / 1000) % 60)
-    .toString()
-    .padStart(2, "0")}`;
+  const totalSeconds = Math.floor(ms / 1000);
+
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor(totalSeconds / 60) % 60;
+  const seconds = totalSeconds % 60;
+
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  }
+
+  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
 
 async function getLastFmNowPlaying() {
@@ -100,6 +110,14 @@ function append(...args: (string | false | undefined | null)[]) {
   return args.filter((e) => e).join(" ");
 }
 
+function parenthesize(str: string) {
+  return str ? `(${str})` : null;
+}
+
+function useTemplate(template: string, data: Record<string, string>) {
+  return template.replaceAll(/{{(\w+)}}/g, (_, key) => data[key] ?? "");
+}
+
 async function update() {
   try {
     if (!client.user) return;
@@ -111,22 +129,46 @@ async function update() {
 
     if (discord && discord.isOnline) {
       /* discord music */
-      if (discord.spotifyInfo) {
-        const start = new Date(discord.spotifyInfo.start);
-        const end = new Date(discord.spotifyInfo.end);
-        const currentTimePassed = end.getTime() - start.getTime();
-        const endTimePassed = end.getTime() - new Date().getTime();
-        const timePassed = currentTimePassed - endTimePassed;
-        const stimePassedStr = timePassedToString(timePassed);
-        const timePassedStr = timePassedToString(currentTimePassed);
+      const musicInfo = discord.spotifyInfo
+        ? {
+            song: discord.spotifyInfo.songName,
+            artist: discord.spotifyInfo.artistName,
+            start: discord.spotifyInfo.start,
+            end: discord.spotifyInfo.end,
+          }
+        : env.CHECK_LASTFM_WHEN_ONLINE && lastfmInfo
+          ? {
+              song: lastfmInfo.songName,
+              artist: lastfmInfo.artistName,
+            }
+          : null;
+
+      if (musicInfo) {
+        const timeString = (() => {
+          if (!musicInfo.start || !musicInfo.end) return null;
+          /* this sucks :p */
+          const start = new Date(musicInfo.start);
+          const end = new Date(musicInfo.end);
+          const currentTimePassed = end.getTime() - start.getTime();
+          const endTimePassed = end.getTime() - new Date().getTime();
+          const timePassed = currentTimePassed - endTimePassed;
+          const stimePassedStr = timePassedToString(timePassed);
+          const timePassedStr = timePassedToString(currentTimePassed);
+
+          return env.SHOW_MUSIC_TIME && `(${stimePassedStr}/${timePassedStr})`;
+        })();
+
         setPresence({
-          status: "online",
+          status: env.MUSIC_STATUS,
           custom_status: {
             text: append(
-              `${discord.spotifyInfo.artistName} - ${discord.spotifyInfo.songName}`,
-              env.SHOW_SPOTIFY_TIME && `(${stimePassedStr}/${timePassedStr})`,
+              useTemplate(env.MUSIC_TEXT, {
+                artist: musicInfo.artist,
+                song: musicInfo.song,
+              }),
+              timeString,
             ),
-            emoji_name: "🎧",
+            emoji_name: env.MUSIC_EMOJI,
           },
         });
         return;
@@ -143,17 +185,19 @@ async function update() {
         const startTime = new Date(other.timestamps.start);
         const now = new Date();
         const timePassed = now.getTime() - startTime.getTime();
-        const timePassedStr = env.SHOW_ACTIVITY_TIME && timePassedToString(timePassed);
+        const timePassedStr =
+          env.SHOW_ACTIVITY_TIME && parenthesize(timePassedToString(timePassed));
 
         const text =
           other.name === "Visual Studio Code"
-            ? append("Coding!", timePassedStr)
-            : append(`Playing ${other.name}`, timePassedStr);
+            ? append(env.CODING_TEXT, timePassedStr)
+            : append(useTemplate(env.PLAYING_TEXT, { name: other.name }), timePassedStr);
 
-        const emoji = other.name === "Visual Studio Code" ? "💻" : "🎮";
+        const emoji =
+          other.name === "Visual Studio Code" ? env.CODING_EMOJI : env.PLAYING_EMOJI;
 
         setPresence({
-          status: "online",
+          status: env.ACTIVITY_STATUS,
           custom_status: {
             text,
             emoji_name: emoji,
@@ -164,7 +208,7 @@ async function update() {
 
       /* default */
       setPresence({
-        status: "online",
+        status: env.ONLINE_STATUS,
         custom_status: {
           text: env.DEFAULT_STATUS_TEXT,
           emoji_name: env.DEFAULT_STATUS_EMOJI,
@@ -176,17 +220,20 @@ async function update() {
     /* offline... lets test lastfm */
     if (lastfmInfo) {
       setPresence({
-        status: "idle",
+        status: env.OFFLINE_MUSIC_STATUS,
         custom_status: {
-          text: `${lastfmInfo.artistName} - ${lastfmInfo.songName}`,
-          emoji_name: "🎵",
+          text: useTemplate(env.MUSIC_TEXT, {
+            artist: lastfmInfo.artistName,
+            song: lastfmInfo.songName,
+          }),
+          emoji_name: env.MUSIC_EMOJI,
         },
       });
       return;
     }
 
     /* okaty bye */
-    setPresence({ status: "invisible", custom_status: null });
+    setPresence({ status: env.OFFLINE_ACTIVITY_STATUS, custom_status: null });
     console.log("OFFLINE");
   } catch (e) {
     console.error("update error:", e);

@@ -10,11 +10,33 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: write env.example
+        run: |
+          if [ -f .env ] && [ -f .env.example ]; then
+            if ! diff -q .env .env.example > /dev/null 2>&1; then
+              echo "Writing .env to .env.example"
+              cp .env .env.example
+            fi
+          fi
+
+      - name: commit env.example
+        if: github.event_name != 'pull_request'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add .env.example
+          git diff --staged --quiet || git commit -m "chore: update .env.example from .env"
+
+      - name: push env.example
+        if: github.event_name != 'pull_request'
+        run: |
+          git push
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3

@@ -1,3 +1,14 @@
 # discord + last.fm to fluxer RPC
 
-wip, you can figure it out yourself if you want to! it's just a lil file
+## setup
+
+setup environment variables: [read .example.env](./.env.example)
+
+> [!IMPORTANT]  
+> uses [this public discord presence api](https://discord-presence-api.johnrich.dev/), follow its instructions to use it
+
+## run
+
+with docker: `docker run -d --env-file .env ghcr.io/letruxux/fluxer-rpc:latest`
+
+with [bun](https://bun.sh): `bun i`, `bun start`
