@@ -96,6 +96,10 @@ function setPresence(load: GatewayPresenceUpdateData) {
   });
 }
 
+function append(...args: (string | false | undefined | null)[]) {
+  return args.filter((e) => e).join(" ");
+}
+
 async function update() {
   try {
     if (!client.user) return;
@@ -118,7 +122,10 @@ async function update() {
         setPresence({
           status: "online",
           custom_status: {
-            text: `${discord.spotifyInfo.artistName} - ${discord.spotifyInfo.songName} (${stimePassedStr}/${timePassedStr})`,
+            text: append(
+              `${discord.spotifyInfo.artistName} - ${discord.spotifyInfo.songName}`,
+              env.SHOW_SPOTIFY_TIME && `(${stimePassedStr}/${timePassedStr})`,
+            ),
             emoji_name: "🎧",
           },
         });
@@ -136,11 +143,12 @@ async function update() {
         const startTime = new Date(other.timestamps.start);
         const now = new Date();
         const timePassed = now.getTime() - startTime.getTime();
+        const timePassedStr = env.SHOW_ACTIVITY_TIME && timePassedToString(timePassed);
 
         const text =
           other.name === "Visual Studio Code"
-            ? `Coding! (${timePassedToString(timePassed)})`
-            : `Playing ${other.name} (${timePassedToString(timePassed)})`;
+            ? append("Coding!", timePassedStr)
+            : append(`Playing ${other.name}`, timePassedStr);
 
         const emoji = other.name === "Visual Studio Code" ? "💻" : "🎮";
 
