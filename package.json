@@ -1,0 +1,19 @@
+{
+  "name": "fluxer-rpc",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "scripts": {
+    "start": "bun ."
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "fluxer-selfbot": "^1.0.1",
+    "ky": "^1.14.3"
+  }
+}
