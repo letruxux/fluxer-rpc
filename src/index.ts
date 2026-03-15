@@ -127,10 +127,10 @@ async function update() {
 
         const text =
           other.name === "Visual Studio Code"
-            ? `Playing ${other.name} (${timePassedToString(timePassed)})`
-            : `Coding... (${timePassedToString(timePassed)})`;
+            ? `Coding! (${timePassedToString(timePassed)})`
+            : `Playing ${other.name} (${timePassedToString(timePassed)})`;
 
-        const emoji = other.name === "Visual Studio Code" ? "🎮" : "💻";
+        const emoji = other.name === "Visual Studio Code" ? "💻" : "🎮";
 
         setPresence({
           status: "online",
