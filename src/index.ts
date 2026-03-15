@@ -3,26 +3,19 @@ import {
   Client,
   type GatewayPresenceUpdateData,
 } from "fluxer-selfbot"; /* i dont trust this lib at all */
-import { connectLanyard, getDiscordPresence, setOnPresenceUpdate } from "./lanyard";
+import { listenToLanyard, getDiscordPresence, setOnPresenceUpdate } from "./lanyard";
 import { env } from "./env";
+import {
+  append,
+  useTemplate,
+  parenthesize,
+  timePassedToString,
+  calculateTimer,
+} from "./utils";
 
 const client = new Client({ intents: 0 });
-
-function timePassedToString(ms: number) {
-  const totalSeconds = Math.floor(ms / 1000);
-
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor(totalSeconds / 60) % 60;
-  const seconds = totalSeconds % 60;
-
-  if (hours > 0) {
-    return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}`;
-  }
-
-  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
-}
+let lastTextContent: string | undefined;
+let lastTimerData: number | undefined;
 
 async function getLastFmNowPlaying() {
   if (!env.LASTFM_USER || !env.LASTFM_KEY) return null;
@@ -55,39 +48,35 @@ async function getLastFmNowPlaying() {
   }
 }
 
-let lastPresence: object | undefined;
-
 function setPresence(load: GatewayPresenceUpdateData) {
   if (!client.user) {
     console.log("user still loading...");
     return;
   }
-  if (JSON.stringify(lastPresence) === JSON.stringify(load)) {
+
+  const text = load.custom_status?.text ?? "";
+  const { textWithNoTimer, timer } = calculateTimer(text);
+
+  const contentChanged = textWithNoTimer !== lastTextContent;
+  const timerChanged = timer !== undefined && timer !== lastTimerData;
+
+  if (!contentChanged && !timerChanged) {
     console.log("same presence");
     return;
   }
+
   if (process.argv.includes("--dry")) {
     console.log("set presence to:", load);
-    lastPresence = load;
+    lastTextContent = textWithNoTimer;
+    if (timer !== undefined) lastTimerData = timer;
     return;
   }
 
   client.user.setPresence(load).then(() => {
     console.log("set presence to:", load);
-    lastPresence = load;
+    lastTextContent = textWithNoTimer;
+    if (timer !== undefined) lastTimerData = timer;
   });
-}
-
-function append(...args: (string | false | undefined | null)[]) {
-  return args.filter((e) => e).join(" ");
-}
-
-function parenthesize(str: string) {
-  return str ? `(${str})` : null;
-}
-
-function useTemplate(template: string, data: Record<string, string>) {
-  return template.replaceAll(/{{(\w+)}}/g, (_, key) => data[key] ?? "");
 }
 
 async function update() {
@@ -225,7 +214,7 @@ async function update() {
 
 client.on("ready", async () => {
   console.log("READY");
-  connectLanyard(env.DISCORD_ID);
+  listenToLanyard(env.DISCORD_ID);
   setOnPresenceUpdate(update);
 });
 

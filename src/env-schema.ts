@@ -43,4 +43,11 @@ export const envSchema = {
   OFFLINE_ACTIVITY_STATUS: statusSchema
     .optional()
     .default("invisible") /* this shows when offline AND not listening to last.fm */,
+
+  TIMER_UPDATE_INTERVAL_SECONDS: z.coerce
+    .number()
+    .optional()
+    .default(
+      30,
+    ) /* how often music/activity timer should update, dont set too low to avoid spamming fluxer */,
 };

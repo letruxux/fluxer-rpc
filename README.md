@@ -8,7 +8,7 @@
 setup environment variables: read [.env.example](./.env.example)
 
 > [!IMPORTANT]  
-> uses [this public discord presence api](https://discord-presence-api.johnrich.dev/), follow its instructions to use it
+> this project uses [lanyard](https://github.com/Phineas/lanyard), join their server to use it!
 
 ## run
 

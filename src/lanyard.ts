@@ -113,7 +113,7 @@ function normalizeActivity(activity: LanyardActivity): LanyardActivity {
   };
 }
 
-export function connectLanyard(discordId: string) {
+export function listenToLanyard(discordId: string) {
   ws = new WebSocket("wss://api.lanyard.rest/socket");
 
   ws.onopen = () => {
@@ -151,7 +151,7 @@ export function connectLanyard(discordId: string) {
   ws.onclose = (e) => {
     console.log("reconnecting to lanyard...", e.code);
     if (heartbeatInterval) clearInterval(heartbeatInterval);
-    setTimeout(() => connectLanyard(discordId), 5000);
+    setTimeout(() => listenToLanyard(discordId), 5000);
   };
 
   ws.onerror = (e) => {
