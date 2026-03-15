@@ -7,15 +7,19 @@
     "@types/bun": "latest"
   },
   "scripts": {
-    "start": "bun ."
+    "start": "bun .",
+    "exe": "bun build . --compile --windows-hide-console --target=bun-windows-x64 --define 'IS_WINDOWS=true' --minify --outfile fluxer-rpc.exe"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
     "@t3-oss/env-core": "^0.13.10",
+    "dotenv": "^17.3.1",
     "fluxer-selfbot": "^1.0.1",
     "ky": "^1.14.3",
+    "open": "^11.0.0",
+    "systray": "^1.0.5",
     "zod": "^4.3.6"
   }
 }

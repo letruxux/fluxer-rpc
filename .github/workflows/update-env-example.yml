@@ -22,7 +22,7 @@ jobs:
 
       - name: write env.example
         run: |
-          bun run scripts/generate-default-env.ts > .env.example.new
+          bun run scripts/generate-default-env.ts --gen > .env.example.new
           if [ ! -f .env.example ] || ! diff -q .env.example .env.example.new > /dev/null 2>&1; then
             mv .env.example.new .env.example
             echo "Updated .env.example"

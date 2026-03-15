@@ -4,7 +4,7 @@ import {
   type GatewayPresenceUpdateData,
 } from "fluxer-selfbot"; /* i dont trust this lib at all */
 import { listenToLanyard, getDiscordPresence, setOnPresenceUpdate } from "./lanyard";
-import { env } from "./env";
+import { env, envPathIfWindows } from "./env";
 import {
   append,
   useTemplate,
@@ -12,12 +12,94 @@ import {
   timePassedToString,
   calculateTimer,
 } from "./utils";
+import type { System } from "typescript";
+import open from "open";
 
-console.log(env.RUN_MODE);
+let systray: any;
+if (env.RUN_MODE === "windows_exe") {
+  try {
+    const SysTray = await import("systray").then(
+      (e) => (e.default as unknown as { default: typeof e.default }).default,
+    );
+
+    systray = new SysTray({
+      menu: {
+        icon: /* base64 */ "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==",
+        // you should using .png icon in macOS/Linux, but .ico format in windows
+        title: "FluxerRPC",
+        tooltip: "",
+        items: [
+          {
+            title: "Open config file",
+            tooltip: "bb",
+            // checked is implement by plain text in linux
+            checked: false,
+            enabled: true,
+          },
+          {
+            title: "GitHub",
+            tooltip: "bb",
+            checked: false,
+            enabled: true,
+          },
+          {
+            title: "Exit",
+            tooltip: "bb",
+            checked: false,
+            enabled: true,
+          },
+        ],
+      },
+      debug: false,
+      copyDir: false, // copy go tray binary to outside directory, useful for packing tool like pkg.
+    });
+
+    systray.onClick(
+      ({
+        item,
+      }: {
+        type: "clicked";
+        item: { title: string; tooltip: string; checked: boolean; enabled: boolean };
+        seq_id: number;
+      }) => {
+        switch (item.title) {
+          case "Open config file":
+            open(envPathIfWindows);
+            break;
+
+          case "Exit":
+            process.exit(0);
+
+          case "GitHub":
+            open("https://github.com/letruxux/fluxer-rpc");
+            break;
+
+          default:
+            break;
+        }
+      },
+    );
+  } catch (e) {
+    console.error("Failed to initialize tray:", e);
+  }
+}
 
 const client = new Client({ intents: 0 });
 let lastTextContent: string | undefined;
 let lastTimerData: number | undefined;
+
+process.on("exit", () => {
+  if (systray) {
+    systray.kill();
+  }
+});
+
+process.on("SIGINT", () => {
+  if (systray) {
+    systray.kill();
+  }
+  process.exit(0);
+});
 
 async function getLastFmNowPlaying() {
   if (!env.LASTFM_USER || !env.LASTFM_KEY) return null;
