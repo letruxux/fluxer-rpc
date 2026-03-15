@@ -156,7 +156,7 @@ async function update() {
     /* offline... lets test lastfm */
     if (lastfmInfo) {
       setPresence({
-        status: "online",
+        status: "idle",
         custom_status: {
           text: `${lastfmInfo.artistName} - ${lastfmInfo.songName}`,
           emoji_name: "🎵",
