@@ -16,9 +16,14 @@ if (env.RUN_MODE === "windows_exe") {
         tooltip: "FluxerRPC",
         items: [
           {
+            title: "FluxerRPC",
+            tooltip: "",
+            checked: false,
+            enabled: false,
+          },
+          {
             title: "Open config file",
             tooltip: "",
-            // checked is implement by plain text in linux
             checked: false,
             enabled: true,
           },

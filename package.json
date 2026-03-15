@@ -8,7 +8,8 @@
   },
   "scripts": {
     "start": "bun .",
-    "exe": "bun build . --compile --windows-hide-console --target=bun-windows-x64 --define 'IS_WINDOWS=true' --minify --outfile fluxer-rpc.exe"
+    "exe": "bun build . --compile --target=bun-windows-x64 --define 'IS_WINDOWS=true' --minify --outfile fluxer-rpc.exe && python scripts/patch.py fluxer-rpc.exe",
+    "dev-exe": "bun build . --compile --target=bun-windows-x64 --define 'IS_WINDOWS=true' --minify --outfile fluxer-rpc.exe"
   },
   "peerDependencies": {
     "typescript": "^5"
