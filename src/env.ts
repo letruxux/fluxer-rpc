@@ -7,7 +7,8 @@ import open from "open";
 import { existsSync } from "node:fs";
 
 declare const IS_WINDOWS: true | undefined;
-process.env.RUN_MODE = IS_WINDOWS ? "windows_exe" : process.env.RUN_MODE;
+if (typeof IS_WINDOWS !== "undefined")
+  process.env.RUN_MODE = IS_WINDOWS ? "windows_exe" : process.env.RUN_MODE;
 
 export const envPathIfWindows = join(
   process.env.LOCALAPPDATA ?? "",
