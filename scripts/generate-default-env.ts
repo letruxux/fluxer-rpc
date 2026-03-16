@@ -6,8 +6,8 @@ export function genExampleEnv() {
   const optional: string[] = [];
 
   function format(value: unknown) {
-    if (value === undefined || value === null) return JSON.stringify("XXX");
-    if (typeof value === "boolean") return value ? "true" : " # empty = false";
+    if (value === undefined || value === null) return "";
+    if (typeof value === "boolean") return String(value);
     return JSON.stringify(value);
   }
 
@@ -25,7 +25,7 @@ export function genExampleEnv() {
         `${key}=${format(parsed.data)}${possibleValues ? ` # ${possibleValues}` : ""}`,
       );
     } else {
-      required.push(`${key}=XXX`);
+      required.push(`${key}=`);
     }
   }
 
@@ -36,7 +36,7 @@ export function genExampleEnv() {
   }
 
   if (optional.length) {
-    env += "# optional ('' means false)\n";
+    env += "# optional\n";
     env += optional.join("\n");
   }
 

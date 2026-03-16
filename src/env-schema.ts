@@ -7,7 +7,7 @@ export const envSchema = {
   TOKEN: z.string(),
   DISCORD_ID: z.string(),
 
-  CHECK_LASTFM_WHEN_ONLINE: z.boolean().optional().default(false),
+  CHECK_LASTFM_WHEN_ONLINE: z.stringbool().optional().default(false),
   LASTFM_USER: z.string().optional(),
   LASTFM_KEY: z
     .string()
@@ -27,8 +27,8 @@ export const envSchema = {
   PLAYING_TEXT: z.string().optional().default("{{action}} {{name}}"),
   PLAYING_EMOJI: z.emoji().optional().default("🎮"),
 
-  SHOW_MUSIC_TIME: z.coerce.boolean().optional().default(true),
-  SHOW_ACTIVITY_TIME: z.coerce.boolean().optional().default(true),
+  SHOW_MUSIC_TIME: z.stringbool().optional().default(true),
+  SHOW_ACTIVITY_TIME: z.stringbool().optional().default(true),
 
   ONLINE_STATUS: statusSchema
     .optional()
