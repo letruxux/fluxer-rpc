@@ -7,7 +7,6 @@
       "dependencies": {
         "@t3-oss/env-core": "^0.13.10",
         "dotenv": "^17.3.1",
-        "fluxer-selfbot": "^1.0.1",
         "ky": "^1.14.3",
         "open": "^11.0.0",
         "systray": "^1.0.5",
@@ -41,8 +40,6 @@
     "define-lazy-prop": ["define-lazy-prop@3.0.0", "", {}, "sha512-N+MeXYoqr3pOgn8xfyRPREN7gHakLYjhsHhWGT3fWAiL4IkAt0iDw14QiiEm2bE30c5XX5q0FtAA3CK5f9/BUg=="],
 
     "dotenv": ["dotenv@17.3.1", "", {}, "sha512-IO8C/dzEb6O3F9/twg6ZLXz164a2fhTnEWb95H23Dm4OuN+92NmEAlTrupP9VW6Jm3sO26tQlqyvyi4CsnY9GA=="],
-
-    "fluxer-selfbot": ["fluxer-selfbot@1.0.1", "", { "peerDependencies": { "typescript": "^5.6.0" } }, "sha512-1WVwq8d92PNNSNsPH/cDl60O641Q82clJJpW0UAZwiVOKBgJCIlP8DdUhyNqgXuFSvknej0YVh2/1w8TxIasrg=="],
 
     "fs-extra": ["fs-extra@4.0.3", "", { "dependencies": { "graceful-fs": "^4.1.2", "jsonfile": "^4.0.0", "universalify": "^0.1.0" } }, "sha512-q6rbdDd1o2mAnQreO7YADIxf/Whx4AHBiRf6d+/cVT8h44ss+lHgxf1FemcqDnQt9X3ct4McHr+JMGlYSsK7Cg=="],
 

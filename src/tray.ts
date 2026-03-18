@@ -1,7 +1,9 @@
 import { env, envPathIfWindows } from "./env";
+import { hexToTerminal, Logger } from "./logger";
 
 let systray: any;
 if (env.RUN_MODE === "windows_exe") {
+  const logger = new Logger(`${hexToTerminal("#400800")}[systray]${Logger.resetColor}`);
   try {
     const SysTray = await import("systray").then(
       (e) => (e.default as unknown as { default: typeof e.default }).default,
@@ -70,8 +72,9 @@ if (env.RUN_MODE === "windows_exe") {
         }
       },
     );
+    logger.info("tray ready!");
   } catch (e) {
-    console.error("Failed to initialize tray:", e);
+    logger.error("Failed to initialize tray:", e);
   }
 }
 

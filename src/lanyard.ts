@@ -1,4 +1,5 @@
 import { env } from "./env";
+import { hexToTerminal, Logger } from "./logger";
 
 export interface LanyardSpotify {
   track_id: string;
@@ -76,6 +77,8 @@ interface LanyardMessage {
   seq?: number;
 }
 
+const logger = new Logger(`${hexToTerminal("#faf")}[lanyard]${Logger.resetColor}`);
+
 let ws: WebSocket | null = null;
 let heartbeatInterval: ReturnType<typeof setInterval> | null = null;
 let currentPresence: LanyardPresence | null = null;
@@ -119,7 +122,7 @@ export function listenToLanyard(discordId: string) {
   ws = new WebSocket("wss://api.lanyard.rest/socket");
 
   ws.onopen = () => {
-    console.log("connected to lanyard!!");
+    logger.info("connected to lanyard!!");
   };
 
   ws.onmessage = (event) => {
@@ -151,13 +154,13 @@ export function listenToLanyard(discordId: string) {
   };
 
   ws.onclose = (e) => {
-    console.log("reconnecting to lanyard...", e.code);
+    logger.info("reconnecting to lanyard...", e.code);
     if (heartbeatInterval) clearInterval(heartbeatInterval);
     setTimeout(() => listenToLanyard(discordId), 5000);
   };
 
   ws.onerror = (e) => {
-    console.error("lanyard socket error:", e);
+    logger.error("lanyard socket error:", e);
   };
 }
 

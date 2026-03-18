@@ -1,84 +1,10 @@
-import ky from "ky";
-import {
-  Client,
-  type GatewayPresenceUpdateData,
-} from "fluxer-selfbot"; /* i dont trust this lib at all */
 import { listenToLanyard, getDiscordPresence, setOnPresenceUpdate } from "./lanyard";
 import { env } from "./env";
-import {
-  append,
-  useTemplate,
-  parenthesize,
-  timePassedToString,
-  calculateTimer,
-} from "./utils";
+import { append, useTemplate, parenthesize, timePassedToString } from "./utils";
 import "./tray";
-
-const client = new Client({ intents: 0 });
-let lastTextContent: string | undefined;
-let lastTimerData: number | undefined;
-
-async function getLastFmNowPlaying() {
-  if (!env.LASTFM_USER || !env.LASTFM_KEY) return null;
-  try {
-    const data = await ky
-      .get("https://ws.audioscrobbler.com/2.0/", {
-        searchParams: {
-          method: "user.getrecenttracks",
-          user: env.LASTFM_USER,
-          api_key: env.LASTFM_KEY,
-          limit: "1",
-          format: "json",
-        },
-      })
-      .json<any>();
-
-    const track = data.recenttracks?.track?.[0];
-    if (!track) return null;
-    const nowPlaying = !!track["@attr"]?.nowplaying;
-    if (!nowPlaying) return null;
-
-    return {
-      songName: track.name,
-      artistName: track.artist["#text"],
-      url: track.url,
-    };
-  } catch (e) {
-    console.error("lastfm error:", e);
-    return null;
-  }
-}
-
-function setPresence(load: GatewayPresenceUpdateData) {
-  if (!client.user) {
-    console.log("user still loading...");
-    return;
-  }
-
-  const text = load.custom_status?.text ?? "";
-  const { textWithNoTimer, timer } = calculateTimer(text);
-
-  const contentChanged = textWithNoTimer !== lastTextContent;
-  const timerChanged = timer !== undefined && timer !== lastTimerData;
-
-  if (!contentChanged && !timerChanged) {
-    console.log("same presence");
-    return;
-  }
-
-  if (process.argv.includes("--dry")) {
-    console.log("set presence to:", load);
-    lastTextContent = textWithNoTimer;
-    if (timer !== undefined) lastTimerData = timer;
-    return;
-  }
-
-  client.user.setPresence(load).then(() => {
-    console.log("set presence to:", load);
-    lastTextContent = textWithNoTimer;
-    if (timer !== undefined) lastTimerData = timer;
-  });
-}
+import { checkToken, type GatewayPresenceUpdateData } from "./fluxer";
+import { getLastFmNowPlaying } from "./lastfm";
+import { logger, setPresence } from "./presence";
 
 type PossibleStatus = {
   priority: number;
@@ -87,8 +13,6 @@ type PossibleStatus = {
 
 async function update() {
   try {
-    if (!client.user) return;
-
     const [discord, lastfmInfo] = await Promise.all([
       Promise.resolve(getDiscordPresence()),
       getLastFmNowPlaying().catch(() => null),
@@ -221,25 +145,24 @@ async function update() {
     const chosenOne = statuses[0];
 
     if (!chosenOne) {
-      console.log("no status");
+      logger.dim("no status to show");
       return;
     }
 
     setPresence(chosenOne.presence);
     if (!discord?.isOnline && !lastfmInfo) {
-      console.log("OFFLINE");
+      logger.dim("offline!");
     }
   } catch (e) {
-    console.error("update error:", e);
+    logger.error("update error:", e);
   }
 }
 
-client.on("ready", async () => {
-  console.log("READY");
+function ready() {
   listenToLanyard(env.DISCORD_ID);
   setOnPresenceUpdate(update);
 
   setInterval(update, env.TIMER_UPDATE_INTERVAL_SECONDS * 1000);
-});
+}
 
-client.login(env.TOKEN);
+checkToken().then(ready);
