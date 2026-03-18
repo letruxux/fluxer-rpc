@@ -56,8 +56,8 @@ export interface DiscordPresence {
   isOnline: boolean;
   other: LanyardActivity[];
   spotifyInfo: {
-    songName: string | undefined;
-    artistName: string | undefined;
+    songName: string;
+    artistName: string;
     start: number | undefined;
     end: number | undefined;
   } | null;
@@ -84,7 +84,7 @@ let heartbeatInterval: ReturnType<typeof setInterval> | null = null;
 let currentPresence: LanyardPresence | null = null;
 let onPresenceUpdate: (() => void) | null = null;
 
-export function setOnPresenceUpdate(callback: () => void) {
+export function onLanyardUpdate(callback: () => void) {
   onPresenceUpdate = callback;
 }
 
@@ -193,8 +193,8 @@ export function getDiscordPresence(): DiscordPresence | null {
 
   if (customMusicActivity) {
     spotifyInfo = {
-      songName: customMusicActivity.details,
-      artistName: customMusicActivity.state,
+      songName: customMusicActivity.details ?? "?",
+      artistName: customMusicActivity.state ?? "?",
       start: customMusicActivity.timestamps?.start,
       end: customMusicActivity.timestamps?.end,
     };

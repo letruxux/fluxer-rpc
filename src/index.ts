@@ -1,9 +1,9 @@
-import { listenToLanyard, getDiscordPresence, setOnPresenceUpdate } from "./lanyard";
+import { listenToLanyard, getDiscordPresence, onLanyardUpdate } from "./lanyard";
 import { env } from "./env";
 import { append, useTemplate, parenthesize, timePassedToString } from "./utils";
 import "./tray";
 import { checkToken, type GatewayPresenceUpdateData } from "./fluxer";
-import { getLastFmNowPlaying } from "./lastfm";
+import { getLastFmNowPlaying, onLastFmUpdate, updateLastFmNowPlaying } from "./lastfm";
 import { logger, setPresence } from "./presence";
 
 type PossibleStatus = {
@@ -13,10 +13,7 @@ type PossibleStatus = {
 
 async function update() {
   try {
-    const [discord, lastfmInfo] = await Promise.all([
-      Promise.resolve(getDiscordPresence()),
-      getLastFmNowPlaying().catch(() => null),
-    ]);
+    const [discord, lastfmInfo] = [getDiscordPresence(), getLastFmNowPlaying()];
 
     const statuses: PossibleStatus[] = [];
 
@@ -160,8 +157,10 @@ async function update() {
 
 function ready() {
   listenToLanyard(env.DISCORD_ID);
-  setOnPresenceUpdate(update);
+  onLanyardUpdate(update);
+  onLastFmUpdate(update);
 
+  setInterval(updateLastFmNowPlaying, env.LASTFM_UPDATE_INTERVAL_SECONDS * 1000);
   setInterval(update, env.TIMER_UPDATE_INTERVAL_SECONDS * 1000);
 }
 

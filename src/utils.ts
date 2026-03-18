@@ -35,13 +35,9 @@ export function timePassedToString(ms: number) {
 }
 
 export function calculateTimer(str: string) {
-  /* regex ?? i hate this but i dont want to track it separately */
   const timerMatch = str.match(/\((\d+):(\d{2})\/\d+:\d{2}\)/);
   const timer = timerMatch
-    ? Math.floor(
-        (+(timerMatch[1] ?? 0) * 60 + +(timerMatch[2] ?? 0)) /
-          env.TIMER_UPDATE_INTERVAL_SECONDS,
-      ) * env.TIMER_UPDATE_INTERVAL_SECONDS
+    ? Math.floor(+(timerMatch[1] ?? 0) * 60 + +(timerMatch[2] ?? 0)) * 1000
     : undefined;
 
   return {

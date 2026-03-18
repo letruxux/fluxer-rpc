@@ -9,6 +9,7 @@ export const ENV_VAR_GROUPS: Record<string, string[]> = {
     "CHECK_LASTFM_WHEN_ONLINE",
     "LASTFM_USER",
     "LASTFM_KEY",
+    "LASTFM_UPDATE_INTERVAL_SECONDS",
   ],
 
   "default status": [
@@ -49,7 +50,7 @@ export const envSchema = {
     .optional()
     .default(false)
     .describe(
-      "*this makes it so that it fetches last.fm even if online (might want to use this if your player doesn't have rich presence)",
+      "* this makes it so that it fetches last.fm even if online (might want to use this if your player doesn't have rich presence)",
     ),
 
   LASTFM_USER: z.string().optional(),
@@ -129,9 +130,14 @@ export const envSchema = {
 
   TIMER_UPDATE_INTERVAL_SECONDS: z.coerce
     .number()
+    .min(5)
     .optional()
     .default(30)
-    .describe(
-      "how often music/activity timer updates (avoid low values to prevent spam)",
-    ),
+    .describe("how often timers update"),
+
+  LASTFM_UPDATE_INTERVAL_SECONDS: z.coerce
+    .number()
+    .optional()
+    .default(30)
+    .describe("how often last.fm updates"),
 };
