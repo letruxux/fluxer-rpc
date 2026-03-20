@@ -28,9 +28,16 @@ if (process.env.RUN_MODE === "windows_exe") {
   }
 }
 
+const runtimeEnv = Object.fromEntries(
+  Object.entries(process.env).map(([k, v]) => [
+    k,
+    typeof v === "string" ? v.replace(/^"|"$/g, "") : v,
+  ]),
+);
+
 export const env = createEnv({
   server: envSchema,
-  runtimeEnv: process.env,
+  runtimeEnv,
   emptyStringAsUndefined: true,
 });
 

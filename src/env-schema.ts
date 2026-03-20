@@ -151,7 +151,7 @@ export const envSchema = {
     .describe("how often last.fm updates"),
 
   ROUND_TO_5_SECONDS: z
-    .boolean()
+    .stringbool()
     .optional()
     .default(true)
     .describe("rounds timers to fancy multiple of 5 numbers"),
