@@ -12,7 +12,7 @@
     "exe": "bun build . --compile --target=bun-windows-x64 --define 'IS_WINDOWS=true' --minify --outfile fluxer-rpc.exe && python scripts/patch.py fluxer-rpc.exe",
     "dev-exe": "bun build . --compile --target=bun-windows-x64 --define 'IS_WINDOWS=true' --minify --outfile fluxer-rpc.exe",
     "env": "bun ./scripts/generate-default-env.ts --gen",
-    "env-gen": "bun ./scripts/generate-default-env.ts --gen > ./.env.example"
+    "env-gen": "bun ./scripts/generate-default-env.ts --write"
   },
   "peerDependencies": {
     "typescript": "^5"
