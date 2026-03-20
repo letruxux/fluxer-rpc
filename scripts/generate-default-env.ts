@@ -73,6 +73,33 @@ export function genExampleEnv() {
   return env.trim();
 }
 
+export function genComposeEnv() {
+  const lines = genExampleEnv().split("\n");
+  const composeLines = lines.map(line => {
+    if (line === "") return "";
+    if (line.startsWith("#")) return `      ${line}`;
+    return `      - ${line}`;
+  });
+  composeLines.push("", "      - RUN_MODE=docker");
+  return composeLines.join("\n");
+}
+
 if (process.argv.includes("--gen")) {
   console.log(genExampleEnv());
+}
+
+if (process.argv.includes("--write")) {
+  const root = new URL("..", import.meta.url).pathname;
+
+  await Bun.write(`${root}.env.example`, genExampleEnv() + "\n");
+  console.log("Updated .env.example");
+
+  const composePath = `${root}docker-compose.yml`;
+  const compose = await Bun.file(composePath).text();
+  const updated = compose.replace(
+    /(    environment:\n)[\s\S]*/,
+    `$1${genComposeEnv()}\n`
+  );
+  await Bun.write(composePath, updated);
+  console.log("Updated docker-compose.yml");
 }

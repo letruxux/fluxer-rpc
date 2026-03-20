@@ -21,22 +21,15 @@ jobs:
 
       - uses: oven-sh/setup-bun@v2
 
-      - name: write env.example
-        run: |
-          bun run env > .env.example.new
-          if [ ! -f .env.example ] || ! diff -q .env.example .env.example.new > /dev/null 2>&1; then
-            mv .env.example.new .env.example
-            echo "Updated .env.example"
-          else
-            rm .env.example.new
-          fi
+      - name: update env files
+        run: bun run env-gen
 
-      - name: commit env.example
+      - name: commit
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add .env.example
-          git diff --staged --quiet || git commit -m "chore: update .env.example"
+          git add .env.example docker-compose.yml
+          git diff --staged --quiet || git commit -m "chore: update env files"
 
       - name: push
         run: |

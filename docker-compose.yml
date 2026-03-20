@@ -1,0 +1,54 @@
+services:
+  fluxer-rpc:
+    image: ghcr.io/letruxux/fluxer-rpc:latest
+    restart: unless-stopped
+    environment:
+      # required
+      - TOKEN=
+      - DISCORD_ID=
+
+      # last.fm (only used when offline on discord) *
+      - CHECK_LASTFM_WHEN_ONLINE=false # * this makes it so that it fetches last.fm even if online (might want to use this if your player doesn't have rich presence)
+      - LASTFM_USER=
+      - LASTFM_KEY=
+      - LASTFM_UPDATE_INTERVAL_SECONDS=30 # how often last.fm updates
+
+      # default status
+      - ENABLE_DEFAULT_STATUS=true # if false, disables the default status
+      - DEFAULT_STATUS_TEXT="hiii"
+      - DEFAULT_STATUS_EMOJI="🐬"
+
+      # music
+      - MUSIC_TEXT="{{artist}} - {{song}}"
+      - MUSIC_EMOJI="🎧"
+      - MUSIC_APPS="feishin, meld, metrolist" # other apps to count as music status (other than spotify)
+      - SHOW_MUSIC_TIME=false
+
+      # coding
+      - CODING_TEXT="Coding!"
+      - CODING_EMOJI="💻"
+      - CODING_APPS="visual studio code, intellij idea, intellij idea community" # apps to count as coding status
+
+      # playing
+      - PLAYING_TEXT="{{action}} {{name}}"
+      - PLAYING_EMOJI="🎮"
+
+      # priorities (lower is more important)
+      - MUSIC_PRIORITY=0
+      - CODING_PRIORITY=2
+      - PLAYING_PRIORITY=1
+
+      # statuses (allowed: online, idle, dnd, invisible)
+      - MIRROR_STATUS_FROM_DISCORD=false # if enabled, mirrors discord status (online, offline, idle, dnd) except for when offline listening from last.fm. the following settings will be ignored if this is enabled!
+      - ONLINE_STATUS="online" # shown when online and idle
+      - ACTIVITY_STATUS="online" # shown when online and playing
+      - MUSIC_STATUS="online" # shown when listening to spotify/feishin
+      - OFFLINE_MUSIC_STATUS="idle" # shown when offline but listening to last.fm
+      - OFFLINE_ACTIVITY_STATUS="invisible" # shown when offline and not listening to last.fm
+
+      # settings
+      - SHOW_ACTIVITY_TIME=true # "activity" means coding OR playing OR literally anything else
+      - TIMER_UPDATE_INTERVAL_SECONDS=30 # how often timers update
+      - ROUND_TO_5_SECONDS=true # rounds timers to fancy multiple of 5 numbers
+
+      - RUN_MODE=docker
