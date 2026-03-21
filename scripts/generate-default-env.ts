@@ -1,4 +1,6 @@
 import { ENV_VAR_GROUPS, envSchema, statusSchema } from "../src/env-schema";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 
 function formatDefault(value: unknown) {
   if (value === undefined || value === null) return "";
@@ -7,13 +9,8 @@ function formatDefault(value: unknown) {
   return JSON.stringify(value);
 }
 
-function makeComment(description?: string, possibleValues?: string) {
-  const parts: string[] = [];
-
-  if (description) parts.push(description);
-  if (possibleValues) parts.push(`allowed: ${possibleValues}`);
-
-  return parts.length ? ` # ${parts.join(" | ")}` : "";
+function makeComment(comment?: string) {
+  return comment ? ` # ${comment}` : "";
 }
 
 export function genExampleEnv() {
@@ -75,12 +72,11 @@ export function genExampleEnv() {
 
 export function genComposeEnv() {
   const lines = genExampleEnv().split("\n");
-  const composeLines = lines.map(line => {
+  const composeLines = lines.map((line) => {
     if (line === "") return "";
     if (line.startsWith("#")) return `      ${line}`;
     return `      - ${line}`;
   });
-  composeLines.push("", "      - RUN_MODE=docker");
   return composeLines.join("\n");
 }
 
@@ -89,17 +85,15 @@ if (process.argv.includes("--gen")) {
 }
 
 if (process.argv.includes("--write")) {
-  const root = new URL("..", import.meta.url).pathname;
+  const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
-  await Bun.write(`${root}.env.example`, genExampleEnv() + "\n");
+  await Bun.write(join(root, ".env.example"), genExampleEnv() + "\n");
   console.log("Updated .env.example");
 
-  const composePath = `${root}docker-compose.yml`;
+  const composePath = join(root, "docker-compose.yml");
   const compose = await Bun.file(composePath).text();
-  const updated = compose.replace(
-    /(    environment:\n)[\s\S]*/,
-    `$1${genComposeEnv()}\n`
-  );
+  const envRegex = /^    environment:\r?\n[\s\S]+$/m;
+  const updated = compose.replace(envRegex, `    environment:\r\n${genComposeEnv()}\r\n`);
   await Bun.write(composePath, updated);
   console.log("Updated docker-compose.yml");
 }

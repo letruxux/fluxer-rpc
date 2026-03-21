@@ -50,5 +50,3 @@ services:
       - SHOW_ACTIVITY_TIME=true # "activity" means coding OR playing OR literally anything else
       - TIMER_UPDATE_INTERVAL_SECONDS=30 # how often timers update
       - ROUND_TO_5_SECONDS=true # rounds timers to fancy multiple of 5 numbers
-
-      - RUN_MODE=docker
