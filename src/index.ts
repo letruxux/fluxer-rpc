@@ -9,6 +9,7 @@ import { logger, setPresence } from "./presence";
 type PossibleStatus = {
   priority: number;
   presence: GatewayPresenceUpdateData;
+  ignoreWhenCounting?: boolean;
 };
 
 async function update() {
@@ -105,6 +106,7 @@ async function update() {
 
       statuses.push({
         priority: Infinity,
+        ignoreWhenCounting: true,
         presence: {
           status: env.MIRROR_STATUS_FROM_DISCORD ? discord.status : env.ONLINE_STATUS,
           custom_status: env.ENABLE_DEFAULT_STATUS
@@ -133,6 +135,7 @@ async function update() {
       }
 
       statuses.push({
+        ignoreWhenCounting: true,
         priority: Infinity,
         presence: { status: env.OFFLINE_ACTIVITY_STATUS, custom_status: null },
       });
@@ -144,6 +147,33 @@ async function update() {
     if (!chosenOne) {
       logger.dim("no status to show");
       return;
+    }
+
+    if (chosenOne.presence.custom_status) {
+      const allActivities = statuses.filter((e) => !e.ignoreWhenCounting);
+      let activityCount = allActivities.length;
+
+      const allActivitiesExceptTheOneChosen = statuses
+        .slice(1)
+        .filter((e) => !e.ignoreWhenCounting);
+
+      const uniqueEmojis = Array.from(
+        new Set(
+          allActivitiesExceptTheOneChosen.map(
+            (e) => e.presence.custom_status?.emoji_name,
+          ),
+        ),
+      ).filter((e) => e !== undefined && e !== null);
+
+      const allStylesOfMoreActivityThing = {
+        plusCount: `(+${activityCount - 1})`,
+        plusEmoji: `(+${uniqueEmojis.join("")})`,
+      };
+
+      const text =
+        `${chosenOne.presence.custom_status.text} ${activityCount > 1 ? allStylesOfMoreActivityThing.plusEmoji : ""}`.trim();
+
+      chosenOne.presence.custom_status.text = text;
     }
 
     setPresence(chosenOne.presence);
