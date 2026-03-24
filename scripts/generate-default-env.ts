@@ -56,6 +56,7 @@ export function genExampleEnv() {
   for (const [key, value] of Object.entries(envSchema)) {
     if (usedKeys.has(key)) continue;
     if (key === "RUN_MODE") continue;
+    if (value.description?.endsWith("DEPRECATED")) continue;
     if (!value) continue;
 
     other.push(buildLine(key, value));

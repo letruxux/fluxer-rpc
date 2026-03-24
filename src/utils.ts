@@ -19,7 +19,10 @@ function positiveOrZero(num: number) {
 export function timePassedToString(ms: number) {
   let totalSeconds = Math.floor(ms / 1000);
 
-  if (env.ROUND_TO_5_SECONDS) totalSeconds = Math.floor(totalSeconds / 5) * 5;
+  const roundSeconds = env.ROUND_TO_5_SECONDS ? 5 : env.ROUND_TO_SECONDS;
+
+  if (roundSeconds && roundSeconds > 0)
+    totalSeconds = Math.floor(totalSeconds / roundSeconds) * roundSeconds;
 
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor(totalSeconds / 60) % 60;
