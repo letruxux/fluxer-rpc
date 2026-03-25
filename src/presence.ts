@@ -5,6 +5,7 @@ import { calculateTimer } from "./utils";
 
 let lastTextContent: string | undefined;
 let lastTimerData: number | undefined;
+let lastStatus: string | undefined;
 
 export const logger = new Logger(
   `${hexToTerminal("#0f0")}[presence]${Logger.resetColor}`,
@@ -40,8 +41,9 @@ export async function setPresence(load: GatewayPresenceUpdateData) {
 
   const contentChanged = textWithNoTimer !== lastTextContent;
   const timerChanged = timer !== undefined && timer !== lastTimerData;
+  const statusChanged = load.status !== lastStatus;
 
-  if (!contentChanged && !timerChanged) {
+  if (!contentChanged && !timerChanged && !statusChanged) {
     return;
   }
 
@@ -55,6 +57,7 @@ export async function setPresence(load: GatewayPresenceUpdateData) {
   if (process.argv.includes("--dry")) {
     logger.info("fake-set presence to:", presencePayloadToString(load));
     lastTextContent = textWithNoTimer;
+    lastStatus = load.status;
     if (timer !== undefined) lastTimerData = timer;
     return;
   }
@@ -62,5 +65,6 @@ export async function setPresence(load: GatewayPresenceUpdateData) {
   await sendPresenceUpdate(load);
 
   lastTextContent = textWithNoTimer;
+  lastStatus = load.status;
   if (timer !== undefined) lastTimerData = timer;
 }
