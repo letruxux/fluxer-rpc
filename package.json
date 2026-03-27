@@ -15,7 +15,8 @@
     "env": "bun ./scripts/generate-default-env.ts --gen",
     "env-gen": "bun ./scripts/generate-default-env.ts --write",
     "tag": "git tag v$(node -p \"require('./package.json').version\")",
-    "clear-tags": "pwsh -Command \"git tag | % { git tag -d $_ }\""
+    "clear-tags": "pwsh -Command \"git tag | % { git tag -d $_ }\"",
+    "push-tags": "git push --tags"
   },
   "peerDependencies": {
     "typescript": "^5"
