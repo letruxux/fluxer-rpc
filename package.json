@@ -14,10 +14,8 @@
     "dev-exe": "bun build . --compile --target=bun-windows-x64 --define 'IS_WINDOWS=true' --minify --outfile fluxer-rpc.exe",
     "env": "bun ./scripts/generate-default-env.ts --gen",
     "env-gen": "bun ./scripts/generate-default-env.ts --write",
-    "rel:patch": "bun pm version patch",
-    "rel:minor": "bun pm version minor",
-    "rel:major": "bun pm version major",
-    "rel:pre": "bun pm version prerelease --preid beta"
+    "tag": "git tag v$(node -p \"require('./package.json').version\")",
+    "clear-tags": "pwsh -Command \"git tag | % { git tag -d $_ }\""
   },
   "peerDependencies": {
     "typescript": "^5"

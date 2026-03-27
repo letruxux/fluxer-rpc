@@ -1,0 +1,1 @@
+git tag | % { git tag -d $_ }
