@@ -3,6 +3,7 @@ name: docker build
 on:
   push:
     branches: [main]
+    tags: [v*]
     paths-ignore:
       - "README.md"
       - "WINDOWS.md"
@@ -42,8 +43,12 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository }}
           tags: |
-            latest
-            sha-${{ github.sha }}
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,format=short
+            type=latest,enable={{is_default_branch}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
