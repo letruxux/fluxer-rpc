@@ -108,7 +108,7 @@ export const envSchema = {
   CODING_APPS: z
     .string()
     .optional()
-    .default("visual studio code,intellij idea,intellij idea community")
+    .default("visual studio code,intellij idea,intellij idea community,vscodium")
     .transform((str) => str.split(",").map((e) => e.trim().toLowerCase()))
     .describe("apps to count as coding status"),
   CODING_PRIORITY: z.coerce.number().optional().default(2),
