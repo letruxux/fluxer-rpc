@@ -56,6 +56,8 @@ To use custom emojis, you need to find their IDs. (and need Plutonium obviously)
 
    ![img](/assets/emoji/3.png)
 
+When you have the ID, you can use it in the config the same as you would use a normal emoji.
+
 </details>
 
 ## Help!!! Bug!!!
