@@ -8,13 +8,13 @@ services:
       - DISCORD_ID=
 
       # last.fm (only used when offline on discord) *
-      - CHECK_LASTFM_WHEN_ONLINE=false # * this makes it so that it fetches last.fm even if online (might want to use this if your player doesn't have rich presence)
+      - CHECK_LASTFM_WHEN_ONLINE=false
       - LASTFM_USER=
       - LASTFM_KEY=
-      - LASTFM_UPDATE_INTERVAL_SECONDS=30 # how often last.fm updates
+      - LASTFM_UPDATE_INTERVAL_SECONDS=30
 
       # default status
-      - ENABLE_DEFAULT_STATUS=true # if false, disables the default status
+      - ENABLE_DEFAULT_STATUS=true
       - DEFAULT_STATUS_TEXT="hiii"
       - DEFAULT_STATUS_EMOJI="🐬"
 
@@ -26,7 +26,7 @@ services:
       # coding
       - CODING_TEXT="Coding!"
       - CODING_EMOJI="💻"
-      - CODING_APPS="visual studio code, intellij idea, intellij idea community, vscodium" # apps to count as coding status
+      - CODING_APPS="visual studio code, intellij idea, intellij idea community, vscodium"
 
       # playing
       - PLAYING_TEXT="{{action}} {{name}}"
@@ -38,25 +38,25 @@ services:
       - PLAYING_PRIORITY=1
 
       # multiple activities
-      - SHOW_MULTIPLE_ACTIVITIES=true # if enabled, shows multiple activities in the status (and follows MULTIPLE_ACTIVITIES_STYLE)
-      - MULTIPLE_ACTIVITIES_STYLE="plusCount" # allowed: "plusCount", "plusEmoji", "emoji", "none"
+      - SHOW_MULTIPLE_ACTIVITIES=true
+      - MULTIPLE_ACTIVITIES_STYLE="plusCount"
       #  plusEmoji - 🎮 Playing GAME (15:00) (+🎧)
       #  emoji - 🎮 Playing GAME (15:00) (🎧)
       #  plusCount - 🎮 Playing GAME (15:00) (+1)
 
 
       # statuses (allowed: online, idle, dnd, invisible)
-      - MIRROR_STATUS_FROM_DISCORD=false # if enabled, mirrors discord status (online, offline, idle, dnd) except for when offline listening from last.fm. the following settings will be ignored if this is enabled!
-      - ONLINE_STATUS="online" # shown when online and idle
-      - ACTIVITY_STATUS="online" # shown when online and playing
-      - MUSIC_STATUS="online" # shown when listening to spotify/feishin
-      - OFFLINE_MUSIC_STATUS="idle" # shown when offline but listening to last.fm
-      - OFFLINE_ACTIVITY_STATUS="invisible" # shown when offline and not listening to last.fm
+      - MIRROR_STATUS_FROM_DISCORD=false
+      - ONLINE_STATUS="online"
+      - ACTIVITY_STATUS="online"
+      - MUSIC_STATUS="online"
+      - OFFLINE_MUSIC_STATUS="idle"
+      - OFFLINE_ACTIVITY_STATUS="invisible"
 
       # settings
-      - SHOW_ACTIVITY_TIME=true # "activity" means coding OR playing OR literally anything else
-      - TIMER_UPDATE_INTERVAL_SECONDS=30 # how often timers update
-      - ROUND_TO_SECONDS=5 # rounds timers to multiple of ... - set to 0 to disable
+      - SHOW_ACTIVITY_TIME=true
+      - TIMER_UPDATE_INTERVAL_SECONDS=30
+      - ROUND_TO_SECONDS=5
 
       # other
       - WATCHING_EMOJI="📺"

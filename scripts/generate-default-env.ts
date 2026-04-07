@@ -76,7 +76,9 @@ export function genComposeEnv() {
   const composeLines = lines.map((line) => {
     if (line === "") return "";
     if (line.startsWith("#")) return `      ${line}`;
-    return `      - ${line}`;
+    // Docker compose si rompe i coglioni con i commenti inline — IMPORTANTE
+    const withoutComment = line.replace(/\s+#\s.*$/, "");
+    return `      - ${withoutComment}`;
   });
   return composeLines.join("\n");
 }
