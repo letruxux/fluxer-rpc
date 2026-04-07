@@ -170,7 +170,9 @@ export function getDiscordPresence(): DiscordPresence | null {
   const discordStatus = currentPresence.discord_status;
   const activities = currentPresence.activities || [];
 
-  const miscOther = activities.filter((e) => e.type !== 2);
+  const miscOther = activities.filter(
+    (e) => e.type !== 2 && e.type !== 4,
+  ); /* filter music and custom (Custom Custom Status 💖💖💖) */
   const musicActivity = activities.find((e) => e.type === 2);
 
   let spotifyInfo: DiscordPresence["spotifyInfo"] | null = null;
