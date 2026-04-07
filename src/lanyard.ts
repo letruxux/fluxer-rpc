@@ -92,20 +92,16 @@ export function onLanyardUpdate(callback: () => void) {
 
 function getActivityTypeName(type: number): string {
   switch (type) {
-    case 0:
-      return "Playing";
     case 1:
       return "Streaming";
     case 2:
       return "Listening to";
     case 3:
       return "Watching";
-    case 4:
-      return "Custom";
     case 5:
       return "Competing";
     default:
-      return "Unknown";
+      return "Playing";
   }
 }
 
