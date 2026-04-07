@@ -15,22 +15,22 @@ services:
 
       # default status
       - ENABLE_DEFAULT_STATUS=true
-      - DEFAULT_STATUS_TEXT="hiii"
-      - DEFAULT_STATUS_EMOJI="🐬"
+      - DEFAULT_STATUS_TEXT=hiii
+      - DEFAULT_STATUS_EMOJI=🐬
 
       # music
-      - MUSIC_TEXT="{{artist}} - {{song}}"
-      - MUSIC_EMOJI="🎧"
+      - MUSIC_TEXT={{artist}} - {{song}}
+      - MUSIC_EMOJI=🎧
       - SHOW_MUSIC_TIME=false
 
       # coding
-      - CODING_TEXT="Coding!"
-      - CODING_EMOJI="💻"
-      - CODING_APPS="visual studio code, intellij idea, intellij idea community, vscodium"
+      - CODING_TEXT=Coding!
+      - CODING_EMOJI=💻
+      - CODING_APPS=visual studio code, intellij idea, intellij idea community, vscodium
 
       # playing
-      - PLAYING_TEXT="{{action}} {{name}}"
-      - PLAYING_EMOJI="🎮"
+      - PLAYING_TEXT={{action}} {{name}}
+      - PLAYING_EMOJI=🎮
 
       # priorities (lower is more important)
       - MUSIC_PRIORITY=0
@@ -39,7 +39,7 @@ services:
 
       # multiple activities
       - SHOW_MULTIPLE_ACTIVITIES=true
-      - MULTIPLE_ACTIVITIES_STYLE="plusCount"
+      - MULTIPLE_ACTIVITIES_STYLE=plusCount
       #  plusEmoji - 🎮 Playing GAME (15:00) (+🎧)
       #  emoji - 🎮 Playing GAME (15:00) (🎧)
       #  plusCount - 🎮 Playing GAME (15:00) (+1)
@@ -47,11 +47,11 @@ services:
 
       # statuses (allowed: online, idle, dnd, invisible)
       - MIRROR_STATUS_FROM_DISCORD=false
-      - ONLINE_STATUS="online"
-      - ACTIVITY_STATUS="online"
-      - MUSIC_STATUS="online"
-      - OFFLINE_MUSIC_STATUS="idle"
-      - OFFLINE_ACTIVITY_STATUS="invisible"
+      - ONLINE_STATUS=online
+      - ACTIVITY_STATUS=online
+      - MUSIC_STATUS=online
+      - OFFLINE_MUSIC_STATUS=idle
+      - OFFLINE_ACTIVITY_STATUS=invisible
 
       # settings
       - SHOW_ACTIVITY_TIME=true
@@ -59,4 +59,4 @@ services:
       - ROUND_TO_SECONDS=5
 
       # other
-      - WATCHING_EMOJI="📺"
+      - WATCHING_EMOJI=📺
