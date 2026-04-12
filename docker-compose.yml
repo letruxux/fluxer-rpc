@@ -26,7 +26,7 @@ services:
       # coding
       - CODING_TEXT=Coding!
       - CODING_EMOJI=💻
-      - CODING_APPS=visual studio code, intellij idea, intellij idea community, vscodium
+      - CODING_APPS=visual studio code, intellij idea, intellij idea community, vscodium, zed
 
       # playing
       - PLAYING_TEXT={{action}} {{name}}
