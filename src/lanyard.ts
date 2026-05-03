@@ -117,7 +117,7 @@ function normalizeActivity(activity: LanyardActivity): LanyardActivity {
 }
 
 export function listenToLanyard(discordId: string) {
-  ws = new WebSocket("wss://api.lanyard.rest/socket");
+  ws = new WebSocket(env.LANYARD_SOCKET || "wss://api.lanyard.rest/socket");
 
   ws.onopen = () => {
     logger.info("connected to lanyard!!");

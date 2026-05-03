@@ -7,6 +7,9 @@ services:
       - TOKEN=
       - DISCORD_ID=
 
+      # lanyard (for self-hosted instances)
+      - LANYARD_SOCKET=
+
       # last.fm (only used when offline on discord) *
       - CHECK_LASTFM_WHEN_ONLINE=false
       - LASTFM_USER=

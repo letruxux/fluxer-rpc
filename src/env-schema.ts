@@ -27,6 +27,10 @@ export const fluxerEmojiSchema = z.union([z.emoji(), snowflakeSchema]);
 export const ENV_VAR_GROUPS: Record<string, string[]> = {
   required: ["TOKEN", "DISCORD_ID"],
 
+  "lanyard (for self-hosted instances)": [
+    "LANYARD_SOCKET",
+  ],
+
   "last.fm (only used when offline on discord) *": [
     "CHECK_LASTFM_WHEN_ONLINE",
     "LASTFM_USER",
@@ -69,6 +73,10 @@ export const ENV_VAR_GROUPS: Record<string, string[]> = {
 export const envSchema = {
   TOKEN: z.string(),
   DISCORD_ID: z.string(),
+
+  LANYARD_SOCKET: z.url({ protocol: /^wss?$/ })
+    .optional()
+    .describe("if empty, will use the official instance"),
 
   CHECK_LASTFM_WHEN_ONLINE: z
     .stringbool()
