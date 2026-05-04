@@ -1,7 +1,6 @@
 {
   stdenvNoCC,
   lib,
-  fetchFromGitHub,
   bun,
   callPackage,
 }: let
@@ -10,15 +9,9 @@ in stdenvNoCC.mkDerivation (final: {
   pname = "fluxer-rpc";
   version = "0.1.0";
 
-  src = fetchFromGitHub {
-    owner = "letruxux";
-    repo = "fluxer-rpc";
-    tag = "v${final.version}";
-    hash = "sha256-XyQrJNuWJT4O/oppJy2Oq0UACvMb1hkKB+naicCsAV0=";
-  };
+  src = ./../..;
 
   nativeBuildInputs = [bun];
-
   node_modules = callPackage ./modules.nix {fluxer-rpc = final;};
 
   configurePhase = ''
