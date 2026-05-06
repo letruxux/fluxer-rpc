@@ -37,6 +37,68 @@ Run with [bun](https://bun.sh): `bun i`, `bun start`
 
 Experimental windows exe: see [WINDOWS.md](./WINDOWS.md)
 
+### Using Flakes
+
+If you're on NixOS with Flakes enabled, you can add this repository to your inputs and use the included Home Manager module
+for configuration & autostart:
+
+```nix
+{
+   inputs = {
+      nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+
+      home-manager = {
+         url = "github:nix-community/home-manager";
+         inputs.nixpkgs.follows = "nixpkgs";
+      };
+      
+      fluxer-rpc = {
+         url = "github:letruxux/fluxer-rpc";
+         # optionally override the nixpkgs revision that is used, so it is the same as your own (might break)
+         inputs.nixpkgs.follows = "nixpkgs";
+      };
+   };
+
+   outputs = {
+      self,
+      nixpkgs,
+      ...
+   } @ inputs: {
+      nixosConfigurations = {
+         hostname = nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            modules = [
+               inputs.home-manager.nixosModules.default
+               {
+                  home-manager = {
+                     users."username".imports = [
+                        (
+                           {...}: {
+                              imports = [
+                                 # add the Home Manager module
+                                 inputs.fluxer-rpc.hmModules.default
+                              ];
+                              
+                              services.fluxer-rpc = {
+                                 enable = true;
+                                 
+                                 # this variable points to a file with all your environment variables
+                                 # it can be a path in your Flake, in your current system, or one managed by
+                                 # a secrets provisioning module like sops-nix
+                                 envFile = ./.env;
+                              };
+                           }
+                        )
+                     ];
+                  };
+               }
+            ];
+         };
+      };
+   };
+}
+```
+
 ## Custom emojis
 
 To use custom emojis, you need to find their IDs. (and need Plutonium obviously)
