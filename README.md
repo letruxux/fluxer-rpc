@@ -2,6 +2,7 @@
 
 [![support](https://badges.fluxer.ltrx.lol/badge/1476277757476868234?style=for-the-badge)](https://fluxer.gg/Roi7rTTU)
 ![docker pulls](https://ghcr-badge.elias.eu.org/shield/letruxux/fluxer-rpc?style=for-the-badge)
+[![donate](https://img.shields.io/badge/Ko--fi-F16061?logo=ko-fi&logoColor=white&style=for-the-badge)](https://ko-fi.com/letruxux)
 
 | ![](/assets/music.webp) | ![](/assets/vsc.webp) | ![](/assets/game.webp) |
 | ----------------------- | --------------------- | ---------------------- |
@@ -33,14 +34,15 @@ Run with Docker: `docker run -d --env-file .env ghcr.io/letruxux/fluxer-rpc:late
 
 Run with [bun](https://bun.sh): `bun i`, `bun start`
 
-### Standalone on windows (not recommended)
+### Standalone on windows (barely supported, might break)
 
-Experimental windows exe: see [WINDOWS.md](./WINDOWS.md)
+Experimental windows executable: [read more](./WINDOWS.md)
 
 ### Using Flakes
 
-If you're on NixOS with Flakes enabled, you can add this repository to your inputs and use the included Home Manager module
-for configuration & autostart:
+<details>
+<summary>If you're on NixOS with Flakes enabled, you can add this repository to your inputs and use the included Home Manager module
+for configuration & autostart:</summary>
 
 ```nix
 {
@@ -99,6 +101,8 @@ for configuration & autostart:
 }
 ```
 
+</details>
+
 ## Custom emojis
 
 To use custom emojis, you need to find their IDs. (and need Plutonium obviously)
@@ -114,7 +118,7 @@ To use custom emojis, you need to find their IDs. (and need Plutonium obviously)
 
    ![img](/assets/emoji/2.png)
 
-3. Copy the ID (the long number)
+3. Send the message, then copy the ID (the long number)
 
    ![img](/assets/emoji/3.png)
 
@@ -124,4 +128,5 @@ When you have the ID, you can use it in the config the same as you would use a n
 
 ## Help!!! Bug!!!
 
-Try redeploying the app, i might have fixed it already. If not, just open an issue!
+Try updating the app, i might have fixed it already. If not, just open an issue!
+
