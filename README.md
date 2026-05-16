@@ -19,7 +19,7 @@ Mirror your discord rich presences to [Fluxer](https://fluxer.app)!
 ## Setup
 
 > [!IMPORTANT]  
-> This project uses [Lanyard](https://github.com/Phineas/lanyard), join their server to use it!
+> This project uses [Lanyard](https://github.com/Phineas/lanyard), [join their server](https://discord.gg/lanyard) to use it!
 
 > [!TIP]  
 > It's highly recommended to review and tweak the entire config before running, so that your presence works how you want it to!
