@@ -1,5 +1,15 @@
-import { env, envPathIfWindows } from "./env";
+import { readFileSync } from "node:fs";
+import { env, envPathIfWindows, logFilePath } from "./env";
 import { hexToTerminal, Logger } from "./logger";
+import iconPath from "../assets/tray-icon.ico" with { type: "file" };
+
+function loadIcon(): string {
+  try {
+    return readFileSync(iconPath).toString("base64");
+  } catch {
+    return "";
+  }
+}
 
 let systray: any;
 if (env.RUN_MODE === "windows_exe") {
@@ -12,8 +22,7 @@ if (env.RUN_MODE === "windows_exe") {
 
     systray = new SysTray({
       menu: {
-        icon: /* base64 */ "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==",
-        // you should using .png icon in macOS/Linux, but .ico format in windows
+        icon: loadIcon(),
         title: "FluxerRPC",
         tooltip: "FluxerRPC",
         items: [
@@ -25,6 +34,12 @@ if (env.RUN_MODE === "windows_exe") {
           },
           {
             title: "Open config file",
+            tooltip: "",
+            checked: false,
+            enabled: true,
+          },
+          {
+            title: "Open logs",
             tooltip: "",
             checked: false,
             enabled: true,
@@ -44,7 +59,7 @@ if (env.RUN_MODE === "windows_exe") {
         ],
       },
       debug: false,
-      copyDir: false, // copy go tray binary to outside directory, useful for packing tool like pkg.
+      copyDir: false,
     });
 
     systray.onClick(
@@ -58,6 +73,10 @@ if (env.RUN_MODE === "windows_exe") {
         switch (item.title) {
           case "Open config file":
             open(envPathIfWindows);
+            break;
+
+          case "Open logs":
+            open(logFilePath);
             break;
 
           case "Exit":

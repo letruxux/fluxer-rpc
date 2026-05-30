@@ -1,5 +1,8 @@
 /* grabbed from flux.fm */
 
+import { appendFileSync, mkdirSync, existsSync } from "node:fs";
+import { dirname } from "node:path";
+
 export function hexToTerminal(_hex: string) {
   /* uh ok idk wat this is */
   let hex = _hex.replace(/^#/, "");
@@ -30,11 +33,24 @@ export class Logger {
   private readonly baseBgColor: string | undefined;
   private readonly dimColor = "\x1b[2m";
   static readonly resetColor = "\x1b[0m";
+  static globalLogFile: string | null = null;
 
   constructor(prefix: string, baseColor?: Hex, baseBgColor?: Hex) {
     this.prefix = prefix;
     this.baseColor = baseColor ? hexToTerminal(baseColor) : "";
     this.baseBgColor = baseBgColor ? hexToTerminal(baseBgColor) : "";
+  }
+
+  private writeFile(...message: any[]): void {
+    const file = Logger.globalLogFile;
+    if (!file) return;
+    try {
+      const dir = dirname(file);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      const prefix = this.prefix.replace(/\x1b\[[\d;]+m/g, "");
+      const line = `[${new Date().toISOString()}] ${prefix} ${message.map((m) => (typeof m === "object" ? JSON.stringify(m, null, 2) : String(m))).join(" ")}\n`;
+      appendFileSync(file, line);
+    } catch {}
   }
 
   info(...message: any[]): void {
@@ -43,6 +59,7 @@ export class Logger {
       ...message,
       Logger.resetColor,
     );
+    this.writeFile("INF", ...message);
   }
 
   error(...message: any[]): void {
@@ -51,6 +68,7 @@ export class Logger {
       ...message,
       Logger.resetColor,
     );
+    this.writeFile("ERR", ...message);
   }
 
   warn(...message: any[]): void {
@@ -59,6 +77,7 @@ export class Logger {
       ...message,
       Logger.resetColor,
     );
+    this.writeFile("WRN", ...message);
   }
 
   dim(...message: any[]): void {
@@ -67,5 +86,6 @@ export class Logger {
       ...message,
       Logger.resetColor,
     );
+    this.writeFile("DIM", ...message);
   }
 }
