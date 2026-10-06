@@ -41,7 +41,7 @@ const headers = {
 const SETTINGS_ENDPOINT = "users/@me/settings";
 
 const rest = ky.create({
-  prefixUrl: "https://web.fluxer.app/api/v1",
+  prefix: "https://web.fluxer.app/api/v1",
   headers,
 });
 
