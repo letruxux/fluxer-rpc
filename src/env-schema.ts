@@ -27,9 +27,7 @@ export const fluxerEmojiSchema = z.union([z.emoji(), snowflakeSchema]);
 export const ENV_VAR_GROUPS: Record<string, string[]> = {
   required: ["TOKEN", "DISCORD_ID"],
 
-  "lanyard (for self-hosted instances)": [
-    "LANYARD_SOCKET",
-  ],
+  "lanyard (for self-hosted instances)": ["LANYARD_SOCKET"],
 
   "last.fm (only used when offline on discord) *": [
     "CHECK_LASTFM_WHEN_ONLINE",
@@ -74,8 +72,10 @@ export const envSchema = {
   TOKEN: z.string(),
   DISCORD_ID: z.string(),
 
-  LANYARD_SOCKET: z.url({ protocol: /^wss?$/ })
+  LANYARD_SOCKET: z
+    .url({ protocol: /^wss?$/ })
     .optional()
+    .default("wss://api.lanyard.rest/socket")
     .describe("if empty, will use the official instance"),
 
   CHECK_LASTFM_WHEN_ONLINE: z
@@ -103,7 +103,7 @@ export const envSchema = {
     .describe("if false, disables the default status"),
 
   DEFAULT_STATUS_TEXT: z.string().optional().default("hiii"),
-  DEFAULT_STATUS_EMOJI: fluxerEmojiSchema.optional().default("🐬"),
+  DEFAULT_STATUS_EMOJI: z.string().optional().default("🐬"),
 
   MUSIC_TEXT: z.string().optional().default("{{artist}} - {{song}}"),
   MUSIC_EMOJI: fluxerEmojiSchema.optional().default("🎧"),

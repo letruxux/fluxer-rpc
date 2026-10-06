@@ -78,7 +78,7 @@ function showWindowsError(msg: string) {
 export const env = createEnv({
   server: envSchema,
   runtimeEnv,
-  emptyStringAsUndefined: true,
+  emptyStringAsUndefined: false,
   onValidationError: (errors) => {
     const msg = `Invalid config:\n${errors.map((e) => e.path?.join(".") + " " + e.message).join("\n")}`;
     logger.error(msg);
@@ -91,7 +91,6 @@ export const env = createEnv({
     process.exit(1);
   },
 });
-
 export function isLastFmEnabled() {
   return env.LASTFM_USER && env.LASTFM_KEY;
 }
