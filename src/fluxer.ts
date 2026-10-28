@@ -87,10 +87,11 @@ export async function sendPresenceUpdate(load: GatewayPresenceUpdateData) {
 }
 
 export async function checkToken() {
-  const res = await rest.get(SETTINGS_ENDPOINT);
+  const res = await rest.get(SETTINGS_ENDPOINT, { throwHttpErrors: false });
 
   if (!res.ok) {
     logger.error("invalid token! (or can't connect to fluxer)");
+logger.error(`${res.status} ${res.statusText} - ${await res.text()}`);
     process.exit(1);
   }
 }
