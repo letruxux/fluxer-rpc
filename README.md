@@ -14,6 +14,7 @@ Mirror your discord rich presences to [Fluxer](https://fluxer.app)!
 - Custom status for music & programming apps
 - Priorities - choose what matters more
 - Offline\* last.fm - show what you're listening to even when offline!
+- Self-hosted instances are supported!
 
 \* can be configured to also work when online
 
