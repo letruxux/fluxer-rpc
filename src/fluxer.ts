@@ -30,22 +30,50 @@ interface FluxerError {
   }[];
 }
 
-const headers = {
-  Authorization: env.TOKEN,
-  "Content-Type": "application/json",
-  Origin: "https://web.fluxer.app",
-  "User-Agent":
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) fluxer_app/0.0.8 Chrome/142.0.7444.235 Electron/39.2.7 Safari/537.36",
-};
+function headers(origin: string) {
+  return {
+    Authorization: env.TOKEN,
+    "Content-Type": "application/json",
+    Origin: origin,
+    "User-Agent":
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.7444.235 Safari/537.36",
+  };
+}
 
 const SETTINGS_ENDPOINT = "users/@me/settings";
 
-const rest = ky.create({
-  prefix: "https://web.fluxer.app/api/v1",
-  headers,
-});
+async function getInstanceUrls(instanceUrl: string) {
+  const startTime = Date.now();
+  logger.dim(`Fetching instance configuration... (${new URL(instanceUrl).hostname})`);
+
+  const resp = await fetch(instanceUrl + "/.well-known/fluxer", {
+    redirect: "follow",
+  }).catch(() => null);
+  if (!resp || !resp.ok) {
+    logger.error(`Couldn't fetch this instance's configuration. ${resp?.status ?? ""}`);
+    process.exit(1);
+  }
+
+  const json = (await resp.json()) as any;
+  const apiUrl = json?.endpoints?.api_client ?? null;
+  const appUrl = json?.endpoints?.webapp ?? null;
+  if (!apiUrl || typeof apiUrl !== "string") {
+    logger.error("Couldn't find this instance's API url.");
+    process.exit(1);
+  }
+
+  logger.dim(`Instance API: ${apiUrl} (${Math.floor(Date.now() - startTime)}ms)`);
+  return { apiUrl, appUrl };
+}
 
 const logger = new Logger(`${hexToTerminal("#413cdd")}[fluxer api]${Logger.resetColor}`);
+
+const instanceUrls = await getInstanceUrls(env.INSTANCE_URL);
+
+const rest = ky.create({
+  prefix: instanceUrls.apiUrl + "/v1",
+  headers: headers(instanceUrls.appUrl),
+});
 
 function isSnowflake(str: string) {
   return snowflakeSchema.safeParse(str).success;
@@ -91,7 +119,7 @@ export async function checkToken() {
 
   if (!res.ok) {
     logger.error("invalid token! (or can't connect to fluxer)");
-logger.error(`${res.status} ${res.statusText} - ${await res.text()}`);
+    logger.error(`${res.status} ${res.statusText} - ${await res.text()}`);
     process.exit(1);
   }
 }
