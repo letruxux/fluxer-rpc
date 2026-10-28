@@ -34,10 +34,6 @@ Run with Docker: `docker run -d --env-file .env ghcr.io/letruxux/fluxer-rpc:late
 
 Run with [bun](https://bun.sh): `bun i`, `bun start`
 
-### Standalone on windows (barely supported, might break)
-
-Experimental windows executable: [read more](./WINDOWS.md)
-
 ### Using Flakes
 
 <details>
@@ -53,7 +49,7 @@ for configuration & autostart:</summary>
          url = "github:nix-community/home-manager";
          inputs.nixpkgs.follows = "nixpkgs";
       };
-      
+
       fluxer-rpc = {
          url = "github:letruxux/fluxer-rpc";
          # optionally override the nixpkgs revision that is used, so it is the same as your own (might break)
@@ -80,10 +76,10 @@ for configuration & autostart:</summary>
                                  # add the Home Manager module
                                  inputs.fluxer-rpc.hmModules.default
                               ];
-                              
+
                               services.fluxer-rpc = {
                                  enable = true;
-                                 
+
                                  # this variable points to a file with all your environment variables
                                  # it can be a path in your Flake, in your current system, or one managed by
                                  # a secrets provisioning module like sops-nix
@@ -129,4 +125,3 @@ When you have the ID, you can use it in the config the same as you would use a n
 ## Help!!! Bug!!!
 
 Try updating the app, i might have fixed it already. If not, just open an issue!
-
