@@ -75,7 +75,7 @@ export const envSchema = {
   DISCORD_ID: z.string(),
   INSTANCE_URL: z
     .url()
-    .default("https://fluxer.app")
+    .default("https://fluxer.com")
     .transform((a) => a.replace(/\/+$/, "")),
 
   LANYARD_SOCKET: z
